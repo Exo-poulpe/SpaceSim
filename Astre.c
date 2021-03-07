@@ -34,10 +34,10 @@ void astre_destroy(astre* a)
     free(a);
 }
 
-void draw_gravity_force(astre* a[],uint32_t size,SDL_Renderer * renderer)
+void draw_gravity_force(lst_vector* lst_astres,uint32_t size,SDL_Renderer * renderer)
 {
     
-    uint32_t index = astre_get_index_most_mass_astre(a,size);
+    uint32_t index = astre_get_index_most_mass_astre(lst_astres,size);
 
     for(uint32_t i=0; i<size; i+=1)
     {
@@ -45,7 +45,9 @@ void draw_gravity_force(astre* a[],uint32_t size,SDL_Renderer * renderer)
         {
             continue;
         }
-        draw_line_color(renderer,a[index]->position_actual.x,a[index]->position_actual.y,a[i]->position_actual.x,a[i]->position_actual.y,COLOR_WHITE);
+        astre* a = lst_vector_get(lst_astres,i);
+        astre* b = lst_vector_get(lst_astres,index);
+        draw_line_color(renderer,b->position_actual.x,b->position_actual.y,a->position_actual.x,a->position_actual.y,COLOR_WHITE);
     }
 }
 
@@ -64,12 +66,14 @@ double astre_get_distance_hyp(astre* a,astre* b)
     return sqrt( pow(astre_get_distance_x(a,b),2) + pow(astre_get_distance_y(a,b),2) );
 }
 
-uint32_t astre_get_index_most_mass_astre(astre* a[],uint32_t size)
+uint32_t astre_get_index_most_mass_astre(lst_vector* lst_astres,uint32_t size)
 {
     uint32_t index = 0;
     for(uint32_t i=0; i<size; i+=1)
     {
-        if(a[i]->mass > a[index]->mass)
+        astre* a = lst_vector_get(lst_astres,i);
+        astre* b = lst_vector_get(lst_astres,index);
+        if(a->mass > b->mass)
         {
             index = i;
         }
@@ -104,84 +108,89 @@ double aster_get_momentum(astre* a)
     return astre_get_speed_norm(a) * a->mass;
 }
 
-void astre_force_compute(astre* a[],uint32_t size)
+void astre_force_compute(lst_vector* lst_astres,uint32_t size)
 {
     for(uint32_t i=0;i<size;i+=1)
     {
+        astre* a = lst_vector_get(lst_astres,i);
         for(uint32_t j=0;j<size;j+=1)
         {
-            if(a[i]->name == a[j]->name){continue;}
-            double distance = astre_get_distance_hyp(a[i],a[j]);
+            astre* b = lst_vector_get(lst_astres,j);
+            if(a->name == b->name){continue;}
+            double distance = astre_get_distance_hyp(a,b);
 
-            double mass_angle = atan2(a[j]->position_actual.y - a[i]->position_actual.y,
-                                        a[j]->position_actual.x - a[i]->position_actual.x);
+            double mass_angle = atan2(b->position_actual.y - a->position_actual.y,
+                                        b->position_actual.x - a->position_actual.x);
 
-            a[i]->delta.x += cos(mass_angle) * (a[j]->mass/pow(distance,2));
-            a[i]->delta.y += sin(mass_angle) * (a[j]->mass/pow(distance,2));
+            a->delta.x += cos(mass_angle) * (b->mass/pow(distance,2));
+            a->delta.y += sin(mass_angle) * (b->mass/pow(distance,2));
         }
     }
 }
 
-void astre_apply_force(astre* a[],uint32_t size)
+void astre_apply_force(lst_vector* lst_astres,uint32_t size)
 {
 
-    uint32_t index_most_massiv = astre_get_index_most_mass_astre(a,size);
+    uint32_t index_most_massiv = astre_get_index_most_mass_astre(lst_astres,size);
     for(uint32_t i=0;i<size;i+=1)
     {
-        a[i]->speed.x += a[i]->delta.x * 1.5;
-        a[i]->speed.y += a[i]->delta.y * 1.5;
+        astre* a = lst_vector_get(lst_astres,i);
+        a->speed.x += a->delta.x * 1.5;
+        a->speed.y += a->delta.y * 1.5;
 
 
-        a[i]->position_actual.x += a[i]->speed.x;
-        a[i]->position_actual.y += a[i]->speed.y;
+        a->position_actual.x += a->speed.x;
+        a->position_actual.y += a->speed.y;
         
         if(i != index_most_massiv)
         {
-            // printf("%s : x : %g, y = %g\n",a[i]->name, a[i]->position_actual.x, a[i]->position_actual.y);
+            // printf("%s : x : %g, y = %g\n",a->name, a->position_actual.x, a->position_actual.y);
             double x,y;
-            x = a[i]->position_actual.x;
-            y = a[i]->position_actual.y;
+            x = a->position_actual.x;
+            y = a->position_actual.y;
             // printf("%g, %g\n",x,y);
             point* tmp = malloc(1 * sizeof(point));
             tmp->x = x;
             tmp->y = y;
             // printf("tmp :: %g, %g\n",tmp->x,tmp->y);
 
-            stack_push(a[i]->position_old,tmp,point_destroy);
-            // point* p = stack_get(a[i]->position_old,0);
+            stack_push(a->position_old,tmp,point_destroy);
+            // point* p = stack_get(a->position_old,0);
             // printf("p :: %g, %g\n",p->x,p->y);
             free(tmp);
         }
 
-        // a[i]->position_actual = point_polar_vector_to_cart(a[i]->position_actual);
+        // a->position_actual = point_polar_vector_to_cart(a->position_actual);
 
-        a[i]->delta.x = 0;
-        a[i]->delta.y = 0;
+        a->delta.x = 0;
+        a->delta.y = 0;
     }
 }
 
-void astre_list_speed(astre* a[], uint32_t size)
+void astre_list_speed(lst_vector* lst_astres, uint32_t size)
 {
     for(uint32_t i=0;i<size;i+=1)
     {
+        astre* a = lst_vector_get(lst_astres,i);
         for(uint32_t j=0;j<size;j+=1)
         {
-            point distance = point_sub(a[i]->position_actual,a[j]->position_actual);
+            astre* b = lst_vector_get(lst_astres,j);
+            point distance = point_sub(a->position_actual,b->position_actual);
             double ndistance = point_norm(distance);
-            double v = sqrt((G * a[i]->mass) / ndistance);
+            double v = sqrt((G * a->mass) / ndistance);
             vector vu = vector_init(-distance.y / ndistance, distance.x / ndistance);
             // vector_init(&vu, -distance.y / ndistance, distance.x / ndistance);
             vu = vector_smul(vu, v);
-            a[j]->speed = vu;
+            b->speed = vu;
         }
     }
     
 }
 
 
-int astre_window(astre* a[],uint32_t size,uint32_t speed)
+int astre_window(lst_vector* lst_astres,uint32_t size,uint32_t speed)
 {
-    assert(a != NULL);
+    assert(lst_astres != NULL);
 
     if (SDL_Init(SDL_INIT_VIDEO) == 0)
     {
@@ -210,21 +219,24 @@ int astre_window(astre* a[],uint32_t size,uint32_t speed)
             SDL_SetRenderDrawColor(renderer, COLOR_GET_R(COLOR_DARK_GRAY), COLOR_GET_G(COLOR_DARK_GRAY), COLOR_GET_B(COLOR_DARK_GRAY), SDL_ALPHA_OPAQUE);
             SDL_RenderClear(renderer);
 
-            uint32_t most_massiv = astre_get_index_most_mass_astre(a,size);
+            uint32_t most_massiv = astre_get_index_most_mass_astre(lst_astres,size);
+            // printf("most massiv : %s\n",((astre*)lst_vector_get(lst_astres,most_massiv))->name);
+
             for(uint32_t i=0; i<size; i+=1)
             {
+                astre* a = lst_vector_get(lst_astres,i);
                 // astre_print(a[i]);
 
-                draw_fill_circle_color(renderer, a[i]->position_actual.x, a[i]->position_actual.y,a[i]->size,a[i]->color);
+                draw_fill_circle_color(renderer, a->position_actual.x, a->position_actual.y,a->size,a->color);
                 
                 // printf("%s => len : %u\n",a[i]->name,stack_length(a[i]->position_old));
                 if(i == most_massiv){continue;}
-                for(uint32_t j=0;j<stack_length(a[i]->position_old);j+=1)
+                for(uint32_t j=0;j<stack_length(a->position_old);j+=1)
                 {
                     // printf("%s : x = %g, y = %g\n",a[i]->name,((point*)stack_get(a[i]->position_old,j))->x,((point*)stack_get(a[i]->position_old,j))->y);
 
-                    draw_point_color(renderer,((point*)stack_get(a[i]->position_old,j))->x,
-                    (*(point*)stack_get(a[i]->position_old,j)).y,a[i]->color);
+                    draw_point_color(renderer,((point*)stack_get(a->position_old,j))->x,
+                    (*(point*)stack_get(a->position_old,j)).y,a->color);
                 }
             }
 
@@ -238,8 +250,8 @@ int astre_window(astre* a[],uint32_t size,uint32_t speed)
             usleep(1000000/speed);
             #endif
 
-            astre_force_compute(a,size);
-            astre_apply_force(a,size);
+            astre_force_compute(lst_astres,size);
+            astre_apply_force(lst_astres,size);
 
             while (SDL_PollEvent(&event))
             {

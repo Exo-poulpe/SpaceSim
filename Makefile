@@ -48,10 +48,13 @@ CWARN += -Wvla
 # $< = first element
 # $@ = name of rules
 
-Exe : stack_list.o helper_gfx.o Point.o Vector.o Astre.o main.o
+Exe : lst_vector.o stack_list.o helper_gfx.o Point.o Vector.o Astre.o main.o
 	$(CC) -o $@ $^ $(LINKS) $(CFLAGS) $(SANIT)
 
 Vector.o : libs/Vector.c
+	$(CC) -o $@ -c $< $(LINKS)
+
+lst_vector.o : libs/lst_vector.c
 	$(CC) -o $@ -c $< $(LINKS)
 
 stack_list.o : libs/stack_list.c

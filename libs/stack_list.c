@@ -15,7 +15,7 @@ uint32_t stack_length(stack_list* stack)
 
     if(stack->list == NULL){return 0;}
 
-    element* tmp = stack->list;
+    element_stack* tmp = stack->list;
     uint32_t cpt = 0;
     while(tmp != NULL)
     {
@@ -27,7 +27,7 @@ uint32_t stack_length(stack_list* stack)
 
 void stack_push(stack_list* stack,void* elem,void (*freedom)(void*))
 {
-    element* value = malloc(1 * sizeof(element));
+    element_stack* value = malloc(1 * sizeof(element_stack));
     value->data = elem;
     value->next = stack->list;
     stack->list = value;
@@ -42,7 +42,7 @@ void* stack_pop(stack_list* stack)
 
     if(stack->list == NULL){return NULL;}
 
-    element* tmp = stack->list;
+    element_stack* tmp = stack->list;
     while(tmp != NULL)
     {
         tmp = tmp->next;
@@ -56,8 +56,8 @@ void stack_remove(stack_list* stack,uint32_t index,void (*freedom)(void*))
 
     if(stack->list == NULL){return;}
 
-    element* tmp = stack->list;
-    element* old = tmp;
+    element_stack* tmp = stack->list;
+    element_stack* old = tmp;
     uint32_t cpt = 1;
     while(tmp != NULL)
     {
@@ -86,8 +86,8 @@ void* stack_get(stack_list* stack,uint32_t index)
 
     if(stack->list == NULL){return;}
 
-    element* tmp = stack->list;
-    element* old = tmp;
+    element_stack* tmp = stack->list;
+    element_stack* old = tmp;
     uint32_t cpt = 0;
     while(tmp != NULL)
     {
@@ -106,7 +106,7 @@ void stack_fprint(stack_list* stack,FILE* out,char* (*get_string_from_data)(void
 
     if(stack->list == NULL){return 0;}
 
-    element* tmp = stack->list;
+    element_stack* tmp = stack->list;
     while(tmp != NULL)
     {
         char* str = get_string_from_data(tmp->data);
@@ -130,8 +130,8 @@ void stack_destroy(stack_list* stack,void (*freedom)(void*))
         return;
     }
 
-    element* tmp = stack->list;
-    element* old = tmp;
+    element_stack* tmp = stack->list;
+    element_stack* old = tmp;
     while(tmp != NULL)
     {
         old = tmp;

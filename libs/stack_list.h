@@ -8,14 +8,14 @@
 #include <math.h>
 #include <assert.h>
 
-typedef struct _element {
+typedef struct _element_stack {
     void* data;
-    struct _element* next;
-} element;
+    struct _element_stack* next;
+} element_stack;
 
 typedef struct _stack_list{
     uint32_t max_size;
-    element* list;
+    element_stack* list;
 } stack_list;
 
 stack_list* stack_create(uint32_t max_size);
