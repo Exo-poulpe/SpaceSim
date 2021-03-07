@@ -210,6 +210,7 @@ int astre_window(astre* a[],uint32_t size,uint32_t speed)
             SDL_SetRenderDrawColor(renderer, COLOR_GET_R(COLOR_DARK_GRAY), COLOR_GET_G(COLOR_DARK_GRAY), COLOR_GET_B(COLOR_DARK_GRAY), SDL_ALPHA_OPAQUE);
             SDL_RenderClear(renderer);
 
+            uint32_t most_massiv = astre_get_index_most_mass_astre(a,size);
             for(uint32_t i=0; i<size; i+=1)
             {
                 // astre_print(a[i]);
@@ -217,7 +218,7 @@ int astre_window(astre* a[],uint32_t size,uint32_t speed)
                 draw_fill_circle_color(renderer, a[i]->position_actual.x, a[i]->position_actual.y,a[i]->size,a[i]->color);
                 
                 // printf("%s => len : %u\n",a[i]->name,stack_length(a[i]->position_old));
-
+                if(i == most_massiv){continue;}
                 for(uint32_t j=0;j<stack_length(a[i]->position_old);j+=1)
                 {
                     // printf("%s : x = %g, y = %g\n",a[i]->name,((point*)stack_get(a[i]->position_old,j))->x,((point*)stack_get(a[i]->position_old,j))->y);
