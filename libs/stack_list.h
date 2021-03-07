@@ -26,5 +26,6 @@ uint32_t stack_length(stack_list* stack);
 void stack_fprint(stack_list* stack,FILE* out,char* (*get_string_from_data)(void*));
 void stack_printf(stack_list* stack,char* (*get_string_from_data)(void*));
 void* stack_pop(stack_list* stack);
+void* stack_get(stack_list* stack,uint32_t index);
 
 #endif

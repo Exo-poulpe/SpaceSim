@@ -11,7 +11,7 @@ astre* astre_create(char* name, double mass,vector speed,uint32_t size,point pos
     a->speed = speed;
     a->size = size;
     a->position_actual = position;
-    a->position_old = point_init(0,0);
+    a->position_old = stack_create(size * 50);
     a->delta = point_init(0,0);
     a->color = color;
     return a;
@@ -29,7 +29,7 @@ void astre_destroy(astre* a)
     a->mass = -1;
     vector_destroy(&a->speed);
     point_destroy(&a->position_actual);
-    point_destroy(&a->position_old);
+    stack_destroy(a->position_old,point_destroy);
     a->color = 0;
     free(a);
 }
@@ -125,37 +125,38 @@ void astre_force_compute(astre* a[],uint32_t size)
 void astre_apply_force(astre* a[],uint32_t size)
 {
 
+    uint32_t index_most_massiv = astre_get_index_most_mass_astre(a,size);
     for(uint32_t i=0;i<size;i+=1)
     {
         a[i]->speed.x += a[i]->delta.x * 1.5;
         a[i]->speed.y += a[i]->delta.y * 1.5;
 
+
         a[i]->position_actual.x += a[i]->speed.x;
         a[i]->position_actual.y += a[i]->speed.y;
+        
+        if(i != index_most_massiv)
+        {
+            // printf("%s : x : %g, y = %g\n",a[i]->name, a[i]->position_actual.x, a[i]->position_actual.y);
+            double x,y;
+            x = a[i]->position_actual.x;
+            y = a[i]->position_actual.y;
+            // printf("%g, %g\n",x,y);
+            point* tmp = malloc(1 * sizeof(point));
+            tmp->x = x;
+            tmp->y = y;
+            // printf("tmp :: %g, %g\n",tmp->x,tmp->y);
+
+            stack_push(a[i]->position_old,tmp,point_destroy);
+            // point* p = stack_get(a[i]->position_old,0);
+            // printf("p :: %g, %g\n",p->x,p->y);
+            free(tmp);
+        }
 
         // a[i]->position_actual = point_polar_vector_to_cart(a[i]->position_actual);
 
         a[i]->delta.x = 0;
         a[i]->delta.y = 0;
-    }
-}
-
-
-void astre_update_position(astre* a[],uint32_t size)
-{
-    for(uint32_t i=0; i<size; i+=1)
-    {
-        // for(uint32_t j=0;j<size;j+=1)
-        // {
-        //     a[j].position_old = a[j].position_actual;
-        //     point dist = point_sub(a[j]->position_actual, a[i]->position_actual);
-        //     double ndistance = point_norm(dist);
-        // }
-
-        // pos(t1) = pos(t0) + v(t0) * dt + a(t0) * dt²
-        a[i]->position_old = a[i]->position_actual;
-        a[i]->position_actual.x += (a[i]->speed.y / 1000);
-        a[i]->position_actual.y += (a[i]->speed.x / 1000);
     }
 }
 
@@ -211,17 +212,22 @@ int astre_window(astre* a[],uint32_t size,uint32_t speed)
 
             for(uint32_t i=0; i<size; i+=1)
             {
-                    astre_print(a[i]);
-                    // astre_list_speed(a,size);
+                // astre_print(a[i]);
 
                 draw_fill_circle_color(renderer, a[i]->position_actual.x, a[i]->position_actual.y,a[i]->size,a[i]->color);
+                
+                // printf("%s => len : %u\n",a[i]->name,stack_length(a[i]->position_old));
 
+                for(uint32_t j=0;j<stack_length(a[i]->position_old);j+=1)
+                {
+                    // printf("%s : x = %g, y = %g\n",a[i]->name,((point*)stack_get(a[i]->position_old,j))->x,((point*)stack_get(a[i]->position_old,j))->y);
+
+                    draw_point_color(renderer,((point*)stack_get(a[i]->position_old,j))->x,
+                    (*(point*)stack_get(a[i]->position_old,j)).y,a[i]->color);
+                }
             }
 
-            // DrawFillCircleColor(renderer, width / 2, height / 2,35,COLOR_ORANGE);
-            // SDL_RenderPresent(renderer);
-
-            draw_gravity_force(a,size,renderer);
+            // draw_gravity_force(a,size,renderer);
 
             SDL_RenderPresent(renderer);
 
@@ -233,7 +239,6 @@ int astre_window(astre* a[],uint32_t size,uint32_t speed)
 
             astre_force_compute(a,size);
             astre_apply_force(a,size);
-            // astre_update_position(a,size);
 
             while (SDL_PollEvent(&event))
             {

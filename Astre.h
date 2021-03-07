@@ -19,6 +19,7 @@
 #include "libs/Vector.h"
 #include "libs/Point.h"
 #include "libs/helper_gfx.h"
+#include "libs/stack_list.h"
 
 static const double G = 6.67430E-11;
 
@@ -29,7 +30,7 @@ typedef struct _astre
     vector speed;
     uint32_t size;
     point position_actual;
-    point position_old;
+    stack_list* position_old;
     point delta;
     uint32_t color;
 } astre;

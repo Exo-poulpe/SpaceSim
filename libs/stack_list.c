@@ -28,10 +28,8 @@ uint32_t stack_length(stack_list* stack)
 void stack_push(stack_list* stack,void* elem,void (*freedom)(void*))
 {
     element* value = malloc(1 * sizeof(element));
-    point* test = elem;
     value->data = elem;
     value->next = stack->list;
-    point* val = value->data;
     stack->list = value;
     if(stack_length(stack) >= stack->max_size){
         stack_remove(stack,stack->max_size,freedom);
@@ -76,6 +74,32 @@ void stack_remove(stack_list* stack,uint32_t index,void (*freedom)(void*))
     }
 
 }
+
+uint32_t stack_size(stack_list* stack)
+{
+    return stack->max_size;
+}
+
+void* stack_get(stack_list* stack,uint32_t index)
+{
+    assert(stack != NULL);
+
+    if(stack->list == NULL){return;}
+
+    element* tmp = stack->list;
+    element* old = tmp;
+    uint32_t cpt = 0;
+    while(tmp != NULL)
+    {
+        if(cpt == index)
+        {
+            return (void*)tmp->data;
+        }
+        tmp = tmp->next;
+        cpt += 1;
+    }
+}
+
 void stack_fprint(stack_list* stack,FILE* out,char* (*get_string_from_data)(void*))
 {
     assert(stack != NULL);
