@@ -29,6 +29,9 @@ int main(void)
     vector mars_speed_polar = vector_init(sqrt(500/50),0);
     point mars_position = point_init(width/2,height/2+120);
 
+    vector mercury_speed_polar = vector_init(sqrt(500/20),0);
+    point mercury_position = point_init(width/2,height/2+50);
+
     // uint32_t size = 4;
     // astre* lst_astres[size];
     // lst_astres[0] = astre_create((char*)"Earth",6,earth_speed_polar,6,earth_position_cart,COLOR_BLUE);
@@ -41,12 +44,14 @@ int main(void)
     astre* a2  = astre_create((char*)"Sun",10000,sun_speed,10,sun_position,COLOR_ORANGE);
     astre* a3 = astre_create((char*)"Mars",4,mars_speed_polar,3,mars_position,COLOR_RED);
     astre* a4  = astre_create((char*)"Moon",1,moon_speed_polar,1,moon_position_cart,COLOR_GRAY);
+    astre* a5  = astre_create((char*)"Mercury",1,mercury_speed_polar,1,mercury_position,COLOR_GRAY);
 
     lst_vector* lst_astres = lst_vector_init();
     lst_astres = lst_vector_push(lst_astres,(void*)a1);
     lst_astres = lst_vector_push(lst_astres,(void*)a2);
     lst_astres = lst_vector_push(lst_astres,(void*)a3);
     lst_astres = lst_vector_push(lst_astres,(void*)a4);
+    lst_astres = lst_vector_push(lst_astres,(void*)a5);
 
 
     // astre_get_velocity_from_position(lst_astres[3],lst_astres[astre_get_index_most_mass_astre(lst_astres,size)]);
