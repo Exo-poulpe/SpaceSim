@@ -11,7 +11,7 @@ astre* astre_create(char* name, double mass,vector speed,uint32_t size,point pos
     a->speed = speed;
     a->size = size;
     a->position_actual = position;
-    a->position_old = stack_create(size * 30);
+    a->position_old = stack_create(mass * 30);
     a->delta = point_init(0,0);
     a->color = color;
     return a;
@@ -135,8 +135,8 @@ void astre_apply_force(lst_vector* lst_astres,uint32_t size)
     for(uint32_t i=0;i<size;i+=1)
     {
         astre* a = lst_vector_get(lst_astres,i);
-        a->speed.x += a->delta.x * 1.5;
-        a->speed.y += a->delta.y * 1.5;
+        a->speed.x += a->delta.x * 1;
+        a->speed.y += a->delta.y * 1;
 
 
         a->position_actual.x += a->speed.x;
@@ -187,6 +187,41 @@ void astre_list_speed(lst_vector* lst_astres, uint32_t size)
     
 }
 
+void astre_draw_old_point(SDL_Renderer * renderer,astre* a)
+{
+    for(uint32_t j=0;j<stack_length(a->position_old);j+=1)
+    {
+        // printf("%s : x = %g, y = %g\n",a[i]->name,((point*)stack_get(a[i]->position_old,j))->x,((point*)stack_get(a[i]->position_old,j))->y);
+
+        draw_point_color(renderer,((point*)stack_get(a->position_old,j))->x,
+        (*(point*)stack_get(a->position_old,j)).y,a->color);
+    }
+
+}
+
+void astre_draw_random_asteroid(lst_vector* lst_astres,uint32_t* size,uint32_t chance,double max_mass_asteroid,uint32_t x,uint32_t y,uint32_t position_offset)
+{
+    if(rand()%100 < chance)
+    {
+        uint32_t start_x = rand()%x + position_offset;
+        uint32_t start_y = rand()%y + position_offset;
+        point tmp_position = point_init(start_x,start_y);
+
+        double mass = drand48();
+        if(mass > max_mass_asteroid){mass -= max_mass_asteroid;}
+        if(mass < 0){mass = 1;}
+        vector tmp_speed = vector_init(rand()%2,rand()%2);
+
+        uint32_t val_name = rand()%INT_MAX;
+        char* name[20];
+        snprintf(name,20,"%u",val_name);
+        
+        astre* atmp  = astre_create((char*)name,mass,tmp_speed,1,tmp_position,COLOR_GRAY);
+        lst_astres = lst_vector_push(lst_astres,(void*)atmp);
+        *size += 1;
+    }
+}
+
 
 int astre_window(lst_vector* lst_astres,uint32_t size,uint32_t speed)
 {
@@ -222,6 +257,7 @@ int astre_window(lst_vector* lst_astres,uint32_t size,uint32_t speed)
             uint32_t most_massiv = astre_get_index_most_mass_astre(lst_astres,size);
             // printf("most massiv : %s\n",((astre*)lst_vector_get(lst_astres,most_massiv))->name);
 
+
             for(uint32_t i=0; i<size; i+=1)
             {
                 astre* a = lst_vector_get(lst_astres,i);
@@ -231,16 +267,10 @@ int astre_window(lst_vector* lst_astres,uint32_t size,uint32_t speed)
                 
                 // printf("%s => len : %u\n",a[i]->name,stack_length(a[i]->position_old));
                 if(i == most_massiv){continue;}
-                for(uint32_t j=0;j<stack_length(a->position_old);j+=1)
-                {
-                    // printf("%s : x = %g, y = %g\n",a[i]->name,((point*)stack_get(a[i]->position_old,j))->x,((point*)stack_get(a[i]->position_old,j))->y);
-
-                    draw_point_color(renderer,((point*)stack_get(a->position_old,j))->x,
-                    (*(point*)stack_get(a->position_old,j)).y,a->color);
-                }
+                astre_draw_old_point(renderer, a);
             }
 
-            // draw_gravity_force(a,size,renderer);
+            // draw_gravity_force(lst_astres,size,renderer);
 
             SDL_RenderPresent(renderer);
 
@@ -252,6 +282,7 @@ int astre_window(lst_vector* lst_astres,uint32_t size,uint32_t speed)
 
             astre_force_compute(lst_astres,size);
             astre_apply_force(lst_astres,size);
+            // astre_draw_random_asteroid(lst_astres,&size,200,3,50,50,50);
 
             while (SDL_PollEvent(&event))
             {

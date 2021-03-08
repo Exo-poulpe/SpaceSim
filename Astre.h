@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <limits.h>
 #include <math.h>
 #include <assert.h>
 
@@ -46,6 +47,10 @@ void astre_destroy(astre* a);
 int mass_to_size(double mass);
 
 void draw_gravity_force(lst_vector* lst_astres,uint32_t size,SDL_Renderer * renderer);
+
+void astre_draw_random_asteroid(lst_vector* lst_astres,uint32_t* size, uint32_t chance,double max_mass_asteroid,uint32_t x,uint32_t y,uint32_t position_offset);
+
+void astre_draw_old_point(SDL_Renderer * renderer,astre* a);
 
 // void astre_update_position(lst_vector* lst_astres,uint32_t size);
 
