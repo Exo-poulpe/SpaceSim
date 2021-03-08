@@ -11,7 +11,7 @@ astre* astre_create(char* name, double mass,vector speed,uint32_t size,point pos
     a->speed = speed;
     a->size = size;
     a->position_actual = position;
-    a->position_old = stack_create(mass * 30);
+    a->position_old = stack_create(mass * 20);
     a->delta = point_init(0,0);
     a->color = color;
     return a;
