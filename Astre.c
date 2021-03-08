@@ -11,7 +11,7 @@ astre* astre_create(char* name, double mass,vector speed,uint32_t size,point pos
     a->speed = speed;
     a->size = size;
     a->position_actual = position;
-    a->position_old = stack_create(size * 100);
+    a->position_old = stack_create(size * 30);
     a->delta = point_init(0,0);
     a->color = color;
     return a;
@@ -257,13 +257,11 @@ int astre_window(lst_vector* lst_astres,uint32_t size,uint32_t speed)
             {
                 switch(event.type)
                 {
-                case SDL_QUIT:
-                    done = SDL_TRUE; // set game state to done,(do what you want here)
-                    break;
+                case SDL_SCANCODE_ESCAPE:
                 case SDLK_ESCAPE:
                     done = SDL_TRUE; // set game state to done,(do what you want here)
                     break;
-                case SDL_SCANCODE_ESCAPE:
+                case SDL_QUIT:
                     done = SDL_TRUE; // set game state to done,(do what you want here)
                     break;
                 default:

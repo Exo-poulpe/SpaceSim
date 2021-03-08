@@ -32,6 +32,9 @@ int main(void)
     vector mercury_speed_polar = vector_init(sqrt(500/20),0);
     point mercury_position = point_init(width/2,height/2+50);
 
+    vector jupyter_speed_polar = vector_init(sqrt(500/100),0);
+    point jupyter_position = point_init(width/2,height/2+300);
+
     // uint32_t size = 4;
     // astre* lst_astres[size];
     // lst_astres[0] = astre_create((char*)"Earth",6,earth_speed_polar,6,earth_position_cart,COLOR_BLUE);
@@ -40,11 +43,12 @@ int main(void)
     // lst_astres[3] = astre_create((char*)"Moon",0.5,moon_speed_polar,2,moon_position_cart,COLOR_GRAY);
     // lst_astres[4] = astre_create((char*)"Sun",300,sun_speed,30,sun_position,COLOR_ORANGE);
 
-    astre* a1 = astre_create((char*)"Earth",6,earth_speed_polar,4,earth_position_cart,COLOR_BLUE);
+    astre* a1 = astre_create((char*)"Earth",6,earth_speed_polar,3,earth_position_cart,COLOR_BLUE);
     astre* a2  = astre_create((char*)"Sun",10000,sun_speed,10,sun_position,COLOR_ORANGE);
-    astre* a3 = astre_create((char*)"Mars",4,mars_speed_polar,3,mars_position,COLOR_RED);
+    astre* a3 = astre_create((char*)"Mars",4,mars_speed_polar,2,mars_position,COLOR_RED);
     astre* a4  = astre_create((char*)"Moon",1,moon_speed_polar,1,moon_position_cart,COLOR_GRAY);
     astre* a5  = astre_create((char*)"Mercury",1,mercury_speed_polar,1,mercury_position,COLOR_GRAY);
+    astre* a6  = astre_create((char*)"Jupyter",10,jupyter_speed_polar,5,jupyter_position,COLOR_GREEN);
 
     lst_vector* lst_astres = lst_vector_init();
     lst_astres = lst_vector_push(lst_astres,(void*)a1);
@@ -52,6 +56,7 @@ int main(void)
     lst_astres = lst_vector_push(lst_astres,(void*)a3);
     lst_astres = lst_vector_push(lst_astres,(void*)a4);
     lst_astres = lst_vector_push(lst_astres,(void*)a5);
+    lst_astres = lst_vector_push(lst_astres,(void*)a6);
 
 
     // astre_get_velocity_from_position(lst_astres[3],lst_astres[astre_get_index_most_mass_astre(lst_astres,size)]);
