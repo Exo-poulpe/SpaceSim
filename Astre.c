@@ -11,7 +11,7 @@ astre* astre_create(char* name, double mass,vector speed,uint32_t size,point pos
     a->speed = speed;
     a->size = size;
     a->position_actual = position;
-    a->position_old = stack_create(size * 50);
+    a->position_old = stack_create(size * 100);
     a->delta = point_init(0,0);
     a->color = color;
     return a;
@@ -53,12 +53,12 @@ void draw_gravity_force(lst_vector* lst_astres,uint32_t size,SDL_Renderer * rend
 
 double astre_get_distance_x(astre* a,astre* b)
 {
-    return (a->position_actual.x - b->position_actual.x);
+    return (a->position_actual.x - b->position_actual.x) * 3;
 }
 
 double astre_get_distance_y(astre* a,astre* b)
 {
-    return (a->position_actual.y - b->position_actual.y);
+    return (a->position_actual.y - b->position_actual.y) * 3;
 }
 
 double astre_get_distance_hyp(astre* a,astre* b)

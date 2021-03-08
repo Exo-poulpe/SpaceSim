@@ -17,17 +17,17 @@
 int main(void)
 {
     int width = 1920, height = 1080;
-    vector earth_speed_polar = vector_init(sqrt(500/350),0);
-    point earth_position_cart = point_init(width/2,height - 100);
+    vector earth_speed_polar = vector_init(sqrt(500/70),0);
+    point earth_position_cart = point_init(width/2,height/2+200);
 
-    vector moon_speed_polar = vector_init(sqrt(500/200),0);
-    point moon_position_cart = point_init(width/2,height - 150);
+    vector moon_speed_polar = vector_init(sqrt(500/100),0);
+    point moon_position_cart = point_init(width/2,height/2+208);
 
     vector sun_speed = vector_init(0,0);
     point sun_position = point_init(width/2,height/2);
 
-    vector mars_speed_polar = vector_init(0,sqrt(500/200));
-    point mars_position = point_init(width/2-200,height/2);
+    vector mars_speed_polar = vector_init(sqrt(500/50),0);
+    point mars_position = point_init(width/2,height/2+120);
 
     // uint32_t size = 4;
     // astre* lst_astres[size];
@@ -37,10 +37,10 @@ int main(void)
     // lst_astres[3] = astre_create((char*)"Moon",0.5,moon_speed_polar,2,moon_position_cart,COLOR_GRAY);
     // lst_astres[4] = astre_create((char*)"Sun",300,sun_speed,30,sun_position,COLOR_ORANGE);
 
-    astre* a1 = astre_create((char*)"Earth",6,earth_speed_polar,6,earth_position_cart,COLOR_BLUE);
-    astre* a2  = astre_create((char*)"Sun",300,sun_speed,30,sun_position,COLOR_ORANGE);
-    astre* a3 = astre_create((char*)"Mars",4,mars_speed_polar,4,mars_position,COLOR_RED);
-    astre* a4  = astre_create((char*)"Moon",0.5,moon_speed_polar,2,moon_position_cart,COLOR_GRAY);
+    astre* a1 = astre_create((char*)"Earth",6,earth_speed_polar,4,earth_position_cart,COLOR_BLUE);
+    astre* a2  = astre_create((char*)"Sun",10000,sun_speed,10,sun_position,COLOR_ORANGE);
+    astre* a3 = astre_create((char*)"Mars",4,mars_speed_polar,3,mars_position,COLOR_RED);
+    astre* a4  = astre_create((char*)"Moon",1,moon_speed_polar,1,moon_position_cart,COLOR_GRAY);
 
     lst_vector* lst_astres = lst_vector_init();
     lst_astres = lst_vector_push(lst_astres,(void*)a1);
