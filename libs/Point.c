@@ -38,8 +38,8 @@ double point_norm(point a)
 
 char* point_to_str(point a)
 {
-    char* str[20];
-    snprintf(str,20,"%g, %g",a.x,a.y);
+    char* str = malloc(30 * sizeof(char));
+    snprintf(str,30,"%g, %g",a.x,a.y);
     return str;
 }
 
@@ -51,8 +51,9 @@ point point_polar_vector_to_cart(point a)
     return res;
 }
 
-void point_destroy(point* v)
+void point_destroy(void* pnt)
 {
+    point* v = pnt; 
     v->x = 0;
     v->y = 0;
 }

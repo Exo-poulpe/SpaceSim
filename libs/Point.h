@@ -17,9 +17,10 @@ typedef struct _point{
 
 point point_init(double a,double b);
 point point_add(point a,point b);
-void point_destroy(point* v);
+void point_destroy(void* pnt);
 point point_sub(point a, point b);
 double point_norm(point a);
 point point_polar_vector_to_cart(point a);
+char* point_to_str(point a);
 
 #endif

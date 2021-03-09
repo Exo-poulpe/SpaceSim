@@ -42,7 +42,7 @@ astre* astre_create(char* name, double mass,vector speed,uint32_t size,point pos
 
 void astre_print(astre* a);
 
-void astre_destroy(astre* a);
+void astre_destroy(void* astr);
 
 int mass_to_size(double mass);
 

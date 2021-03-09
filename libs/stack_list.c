@@ -84,10 +84,9 @@ void* stack_get(stack_list* stack,uint32_t index)
 {
     assert(stack != NULL);
 
-    if(stack->list == NULL){return;}
+    if(stack->list == NULL){return NULL;}
 
     element_stack* tmp = stack->list;
-    element_stack* old = tmp;
     uint32_t cpt = 0;
     while(tmp != NULL)
     {
@@ -98,13 +97,14 @@ void* stack_get(stack_list* stack,uint32_t index)
         tmp = tmp->next;
         cpt += 1;
     }
+    return NULL;
 }
 
 void stack_fprint(stack_list* stack,FILE* out,char* (*get_string_from_data)(void*))
 {
     assert(stack != NULL);
 
-    if(stack->list == NULL){return 0;}
+    if(stack->list == NULL){return;}
 
     element_stack* tmp = stack->list;
     while(tmp != NULL)

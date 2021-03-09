@@ -23,8 +23,9 @@ void astre_print(astre* a)
            vector_cart_to_polar(a->speed).x,vector_cart_to_polar(a->speed).y,a->position_actual.x,a->position_actual.y);
 }
 
-void astre_destroy(astre* a)
+void astre_destroy(void* astr)
 {
+    astre* a = astr;
     a->name = NULL;
     a->mass = -1;
     vector_destroy(&a->speed);
@@ -201,7 +202,7 @@ void astre_draw_old_point(SDL_Renderer * renderer,astre* a)
 
 void astre_draw_random_asteroid(lst_vector* lst_astres,uint32_t* size,uint32_t chance,double max_mass_asteroid,uint32_t x,uint32_t y,uint32_t position_offset)
 {
-    if(rand()%100 < chance)
+    if((uint32_t)rand() % 100 < chance)
     {
         uint32_t start_x = rand()%x + position_offset;
         uint32_t start_y = rand()%y + position_offset;
@@ -213,7 +214,7 @@ void astre_draw_random_asteroid(lst_vector* lst_astres,uint32_t* size,uint32_t c
         vector tmp_speed = vector_init(rand()%2,rand()%2);
 
         uint32_t val_name = rand()%INT_MAX;
-        char* name[20];
+        char name[20];
         snprintf(name,20,"%u",val_name);
         
         astre* atmp  = astre_create((char*)name,mass,tmp_speed,1,tmp_position,COLOR_GRAY);
@@ -241,7 +242,7 @@ int astre_window(lst_vector* lst_astres,uint32_t size,uint32_t speed)
         
         if(win == NULL || renderer == NULL)
         {
-            return;
+            return 0;
         }
         SDL_SetWindowFullscreen(win,1);
         SDL_bool done = SDL_FALSE;
